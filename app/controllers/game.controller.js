@@ -39,7 +39,7 @@ exports.findOne = (req, res) => {
   // console.log("req game ID", req.params.gameId);
   Game.findById(req.params.gameId)
     .then(game => {
-      console.log("game", game);
+      // console.log("game", game);
       if (!game) {
         // if covers no game data yet
         console.log("in if");
@@ -47,10 +47,11 @@ exports.findOne = (req, res) => {
       } else if ((new Date() - game.updatedAt) / 1000 > 15) {
         // else if convers 15 second update
         console.log("in else if");
+        const url = `https://chumley.barstoolsports.com/dev/data/games/${
+          req.params.gameId
+        }.json`;
         axios
-          .get(
-            "https://chumley.barstoolsports.com/dev/data/games/eed38457-db28-4658-ae4f-4d4d38e9e212.json"
-          )
+          .get(url)
           .then(
             axios.spread(response => {
               Game.findByIdAndUpdate(
@@ -83,7 +84,11 @@ exports.findOne = (req, res) => {
           .catch(error => {
             console.log(error);
           });
-      } else res.send(game); // else just send the stored data
+      } else {
+        // else just send the stored data
+        console.log("in else");
+        res.send(game);
+      }
     })
     .catch(err => {
       if (err.kind === "ObjectId") {
