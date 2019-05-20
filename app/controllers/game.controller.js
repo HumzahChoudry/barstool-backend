@@ -10,7 +10,7 @@ exports.fetchGameFromApi = id => {
 
 exports.create = (req, res) => {
   // Validate request
-  console.log("hello from create");
+
   if (!req.params.gameId) {
     return res.status(400).send({
       message: "ID can not be empty"
@@ -23,7 +23,6 @@ exports.create = (req, res) => {
     game
       .save()
       .then(data => {
-        console.log("sending data");
         res.send(data);
       })
       .catch(err => {
@@ -42,15 +41,15 @@ exports.findOne = (req, res) => {
       // console.log("game", game);
       if (!game) {
         // 'if' covers no game data yet, create it
-        console.log("in if");
+
         exports.create(req, res);
       } else if ((new Date() - game.updatedAt) / 1000 > 15) {
         // 'else if' covers 15 second update
-        console.log("in else if");
+
         exports.update(req, res, game);
       } else {
         // 'else' just send the cached data
-        console.log("in else");
+
         res.send(game);
       }
     })
@@ -62,8 +61,6 @@ exports.findOne = (req, res) => {
 };
 
 exports.update = (req, res, data) => {
-  console.log("hello from update");
-
   exports
     .fetchGameFromApi(req.params.gameId)
     .then(
